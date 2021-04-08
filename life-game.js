@@ -4,6 +4,15 @@ const log = console.log.bind(console)
 
 const { cells1 } = require('./cells1.js')
 
+const range = (start, end, step = 1) => {
+    if (start > end) {
+        return []
+    } else {
+        return [start]
+            .concat(range(start + step, end, step))
+    }
+}
+
 const draw = (str, hide=true, clear=true) => {
     const esc = ansiEscapes
     if (clear) {  
@@ -13,20 +22,16 @@ const draw = (str, hide=true, clear=true) => {
     log(hide ? esc.cursorHide : esc.cursorShow)
 }  
 
-const generateRandomCellsLine =
-    (countOfCellsInLine, probabilityForLive = 0.1) => {
-    return new Array(countOfCellsInLine).fill(0)
-        .map(_ => Math.random() < probabilityForLive ? 1 : 0)
-}
+const generateRandomCellsLine = (n, p = 0.1) =>
+    range(1, n).map(
+        _ => Math.random() < p ? 1 : 0
+    )
 
-const generateCells = (countOfCellsInLine, probabilityForLive) => {
-    return new Array(countOfCellsInLine).fill(0)
-        .map(_ => generateRandomCellsLine(countOfCellsInLine, probabilityForLive))
-}
+const generateCells = (n, p) =>
+    range(1, n).map(_ => generateRandomCellsLine(n, p))
 
-const currentIsLife = (cells, x, y) => {
-    return Boolean(cells[x] && cells[x][y])
-}
+const currentIsLife = (cells, x, y) =>
+    Boolean(cells[x] && cells[x][y])
 
 const countOfLiveNeighbours = (cells, x, y) => {
     const neighbours = [
@@ -40,21 +45,12 @@ const countOfLiveNeighbours = (cells, x, y) => {
         [ x + 1, y + 1 ],
     ]
     return neighbours
-        .filter(([x1, y1]) => currentIsLife(cells, x1, y1))
+        .filter(
+            ([x1, y1]) => currentIsLife(cells, x1, y1)
+        )
         .length
 }
 
-// const cs = generateCells(10, 0.2)
-// console.log(
-//     countOfLiveNeighbours(
-//         cs,
-//         2,
-//         4,
-//     )
-// )
-// console.log(cs)
-
-/** 根据当前细胞 x y 判断下一个状态它是否还活着 */
 const nextIsLife = (cells, x, y) => {
     const count = countOfLiveNeighbours(cells, x, y)
     if (count === 3) {
@@ -66,33 +62,30 @@ const nextIsLife = (cells, x, y) => {
     }
 }
 
-const cells2 = [    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0],    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0],    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],]
-
-
-let cells = generateCells(30, 0.1)
-cells = cells1
-// cells = cells2
-
-const update = () => {
-    const old = JSON.parse(JSON.stringify(cells))
-    for (let x = 0; x < cells.length; x++) {
-        const line = cells[x]
-        for (let y = 0; y < line.length; y++) {
-            cells[x][y] = nextIsLife(old, x, y)
+const main = () => {
+    let cells = generateCells(30, 0.1)
+    cells = cells1
+    const update = () => {
+        const old = JSON.parse(JSON.stringify(cells))
+        for (let x = 0; x < cells.length; x++) {
+            const line = cells[x]
+            for (let y = 0; y < line.length; y++) {
+                cells[x][y] = nextIsLife(old, x, y)
+            }
         }
     }
+    let symbol = 'o '
+    symbol = '🌕 '
+    const showCells = cells => cells
+        .map(line => {
+            return line.map(c => c ? symbol : ' ').join('')
+        })
+        .join('\n')
+    setInterval(() => {
+        draw(showCells(cells))
+        update()
+    }, 1000/20)
 }
 
-let symbol = 'o '
-symbol = '🌕 '
+main()
 
-const showCells = cells => cells
-    .map(line => {
-        return line.map(c => c ? symbol : ' ').join('')
-    })
-    .join('\n')
-
-setInterval(() => {
-    draw(showCells(cells))
-    update()
-}, 1000/20)
