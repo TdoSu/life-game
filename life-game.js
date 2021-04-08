@@ -13,6 +13,7 @@ const range = (start, end, step = 1) => {
     }
 }
 
+// 在命令行绘制字符串, hide 隐藏光标, clear 清屏
 const draw = (str, hide=true, clear=true) => {
     const esc = ansiEscapes
     if (clear) {  
@@ -22,17 +23,22 @@ const draw = (str, hide=true, clear=true) => {
     log(hide ? esc.cursorHide : esc.cursorShow)
 }  
 
+// 生成 n 个元素的数组, 元素是 0 或 1, 1的概率是 p
 const generateRandomCellsLine = (n, p = 0.1) =>
     range(1, n).map(
         _ => Math.random() < p ? 1 : 0
     )
 
+// 生成 n*n 的数组, 元素是 0 或 1, 1 的概率是 p
 const generateCells = (n, p) =>
-    range(1, n).map(_ => generateRandomCellsLine(n, p))
+    range(1, n)
+        .map(_ => generateRandomCellsLine(n, p))
 
+// 判断 x y 位置的生命当前是否活着
 const currentIsLife = (cells, x, y) =>
     Boolean(cells[x] && cells[x][y])
 
+// 计算周围活着的邻居数量
 const countOfLiveNeighbours = (cells, x, y) => {
     const neighbours = [
         [ x - 1, y - 1 ],
@@ -46,11 +52,13 @@ const countOfLiveNeighbours = (cells, x, y) => {
     ]
     return neighbours
         .filter(
-            ([x1, y1]) => currentIsLife(cells, x1, y1)
+            ([x1, y1]) =>
+                currentIsLife(cells, x1, y1)
         )
         .length
 }
 
+// 根据规则判断下一个时刻当前生命的状态
 const nextIsLife = (cells, x, y) => {
     const count = countOfLiveNeighbours(cells, x, y)
     if (count === 3) {
