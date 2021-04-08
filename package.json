@@ -1,0 +1,23 @@
+{
+  "name": "life-game",
+  "version": "1.0.0",
+  "description": "Conway life game",
+  "main": "life-game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weifubao/life-game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weifubao/life-game/issues"
+  },
+  "homepage": "https://github.com/weifubao/life-game#readme",
+  "dependencies": {
+    "ansi-escapes": "^4.3.2"
+  }
+}
