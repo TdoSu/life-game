@@ -80,7 +80,7 @@ const main = () => {
     process.stdin.setRawMode(true)
     process.stdin.on('keypress', (key) => {
         if (key === 'q') {
-            ansiEscapes.cursorShow 
+            log(ansiEscapes.cursorShow)
             process.exit()
         }
     })
