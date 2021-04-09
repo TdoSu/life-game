@@ -71,8 +71,20 @@ const nextIsLife = (cells, x, y) => {
 }
 
 const main = () => {
-    let cells = generateCells(30, 0.1)
-    cells = cells1
+    const speed = 10
+    const symbol = 'o '
+    // const cells = generateCells(30, 0.1)
+    const cells = cells1
+
+    readline.emitKeypressEvents(process.stdin)
+    process.stdin.setRawMode(true)
+    process.stdin.on('keypress', (key) => {
+        if (key === 'q') {
+            ansiEscapes.cursorShow 
+            process.exit()
+        }
+    })
+
     const update = () => {
         const old = JSON.parse(JSON.stringify(cells))
         for (let x = 0; x < cells.length; x++) {
@@ -82,17 +94,17 @@ const main = () => {
             }
         }
     }
-    let symbol = 'o '
-    symbol = '🌕 '
     const showCells = cells => cells
         .map(line => {
-            return line.map(c => c ? symbol : ' ').join('')
+            return line
+                .map(c => c ? symbol : ' ')
+                .join('')
         })
         .join('\n')
     setInterval(() => {
         draw(showCells(cells))
         update()
-    }, 1000/20)
+    }, 1000 / speed)
 }
 
 main()
