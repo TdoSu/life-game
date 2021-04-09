@@ -4,6 +4,48 @@ const log = console.log.bind(console)
 
 const { cells1 } = require('./cells1.js')
 
+const copy = o => JSON.parse(JSON.stringify(o))
+
+const beside = (cells1, cells2) => {
+    cells1 = copy(cells1)
+    cells2 = copy(cells2)
+    return cells1.map((line, index) => line.concat(cells2[index]))
+}
+
+const below = (cells1, cells2) => {
+    cells1 = copy(cells1)
+    cells2 = copy(cells2)
+    return cells1.concat(cells2)
+}
+
+const rotate = (cells) => {
+    cells = copy(cells)
+    if (cells.length === 0) {
+        return []
+    } else if (cells.length === 1) {
+        return cells[0].map(e => [e])
+    } else {
+        return beside(rotate(cells.slice(1)), rotate([cells[0]]))
+    }
+}
+
+const mirrorV = (cells) => {
+    cells = copy(cells)
+    return cells.map(line => line.reverse())
+}
+
+const mirrorP = (cells) => {
+    cells = copy(cells)
+    return cells.reverse()
+}
+
+const cells4 = (cells) => {
+    cells = copy(cells)
+    const upper = beside(mirrorV(cells), cells)
+    const lower = mirrorP(upper)
+    return below(upper, lower)
+}
+
 const range = (start, end, step = 1) => {
     if (start > end) {
         return []
@@ -74,7 +116,7 @@ const main = () => {
     const speed = 10
     const symbol = 'o '
     // const cells = generateCells(30, 0.1)
-    const cells = cells1
+    const cells = cells4(cells1)
 
     readline.emitKeypressEvents(process.stdin)
     process.stdin.setRawMode(true)
