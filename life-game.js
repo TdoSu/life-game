@@ -114,7 +114,7 @@ const nextIsLife = (cells, x, y) => {
 
 const main = () => {
     const speed = 10
-    const symbol = 'o '
+    const symbol = 'o'
     // const cells = generateCells(30, 0.1)
     const cells = cells4(cells1)
 
