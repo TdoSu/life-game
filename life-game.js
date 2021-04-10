@@ -120,8 +120,7 @@ const nextIsLife = (cells, x, y) => {
 const main = () => {
     const speed = 10
     const symbol = 'o'
-    // const cells = generateCells(30, 0.1)
-    const cells = cells4(cells1)
+    let cells = [[]]
 
     readline.emitKeypressEvents(process.stdin)
     process.stdin.setRawMode(true)
@@ -129,6 +128,10 @@ const main = () => {
         if (key === 'q') {
             log(ansiEscapes.cursorShow)
             process.exit()
+        } else if (key === 's') {
+            cells = cells4(cells1)
+        } else if (key === 'r') {
+            cells = generateCells(60, 0.1)
         }
     })
 
