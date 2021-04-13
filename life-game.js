@@ -9,7 +9,9 @@ const copy = o => JSON.parse(JSON.stringify(o))
 const beside = (cells1, cells2) => {
     cells1 = copy(cells1)
     cells2 = copy(cells2)
-    return cells1.map((line, index) => line.concat(cells2[index]))
+    return cells1.map(
+        (line, index) => line.concat(cells2[index])
+    )
 }
 
 const below = (cells1, cells2) => {
@@ -25,7 +27,10 @@ const rotate = (cells) => {
     } else if (cells.length === 1) {
         return cells[0].map(e => [e])
     } else {
-        return beside(rotate(cells.slice(1)), rotate([cells[0]]))
+        return beside(
+            rotate(cells.slice(1)),
+            rotate([cells[0]])
+        )
     }
 }
 
@@ -115,8 +120,7 @@ const nextIsLife = (cells, x, y) => {
 const main = () => {
     const speed = 10
     const symbol = 'o'
-    // const cells = generateCells(30, 0.1)
-    const cells = cells4(cells1)
+    let cells = [[]]
 
     readline.emitKeypressEvents(process.stdin)
     process.stdin.setRawMode(true)
@@ -124,6 +128,10 @@ const main = () => {
         if (key === 'q') {
             log(ansiEscapes.cursorShow)
             process.exit()
+        } else if (key === 's') {
+            cells = cells4(cells1)
+        } else if (key === 'r') {
+            cells = generateCells(60, 0.1)
         }
     })
 
@@ -136,6 +144,7 @@ const main = () => {
             }
         }
     }
+
     const showCells = cells => cells
         .map(line => {
             return line
@@ -143,6 +152,7 @@ const main = () => {
                 .join('')
         })
         .join('\n')
+
     setInterval(() => {
         draw(showCells(cells))
         update()
