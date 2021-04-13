@@ -12,7 +12,7 @@ type CellOperator = (...cells: Cells[]) => Cells
 
 const log = console.log.bind(console)
 
-const copy = (o: any) => JSON.parse(JSON.stringify(o))
+const copy = (o: any): any => JSON.parse(JSON.stringify(o))
 
 const beside: CellOperator = (cells1, cells2) => {
     cells1 = copy(cells1)
@@ -118,26 +118,27 @@ const nextIsLife = (cells: Cells, x: number, y: number): Status => {
     }
 }
 
-const main = () => {
-    const speed = 10
-    const symbol = 'o'
-    let cells: Cells = [[]]
-
-    readline.emitKeypressEvents(process.stdin)
-    process.stdin.setRawMode(true)
-    process.stdin.on('keypress', (key) => {
-        if (key === 'q') {
-            log(ansiEscapes.cursorShow)
-            process.exit()
-        } else if (key === 's') {
-            cells = cells4(cells1 as Cells)
-        } else if (key === 'r') {
-            cells = generateCells(60, 0.1)
-        }
-    })
-
-    const update = () => {
-        const old = JSON.parse(JSON.stringify(cells))
+class Game {
+    private cells: Cells = [[]]
+    private speed = 10
+    private symbol = 'o'
+    constructor () {
+        readline.emitKeypressEvents(process.stdin)
+        process.stdin.setRawMode(true)
+        process.stdin.on('keypress', (key) => {
+            if (key === 'q') {
+                log(ansiEscapes.cursorShow)
+                process.exit()
+            } else if (key === 's') {
+                this.cells = cells4(cells1 as Cells)
+            } else if (key === 'r') {
+                this.cells = generateCells(60, 0.1)
+            }
+        })
+    }
+    private update () {
+        const cells = this.cells
+        const old = copy(cells)
         for (let x = 0; x < cells.length; x++) {
             const line = cells[x]
             for (let y = 0; y < line.length; y++) {
@@ -145,19 +146,30 @@ const main = () => {
             }
         }
     }
-
-    const showCells = (cells: Cells) => cells
-        .map(line => {
-            return line
-                .map(c => c ? symbol : ' ')
-                .join('')
-        })
-        .join('\n')
-
-    setInterval(() => {
+    private draw () {
+        const cells = this.cells
+        const symbol = this.symbol
+        const showCells = (cells: Cells) => cells
+            .map(line => {
+                return line
+                    .map(c => c ? symbol : ' ')
+                    .join('')
+            })
+            .join('\n')
         draw(showCells(cells))
-        update()
-    }, 1000 / speed)
+    }
+    run () {
+        const speed = this.speed
+        setInterval(() => {
+            this.draw()
+            this.update()
+        }, 1000 / speed)
+    }
+}
+
+const main = () => {
+    const g = new Game()
+    g.run()
 }
 
 main()
