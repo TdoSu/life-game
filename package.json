@@ -4,6 +4,7 @@
   "description": "Conway life game",
   "main": "life-game.js",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +20,8 @@
   "homepage": "https://github.com/weifubao/life-game#readme",
   "dependencies": {
     "ansi-escapes": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.37"
   }
 }
